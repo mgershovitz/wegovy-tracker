@@ -79,6 +79,7 @@
     <div class="needle"></div>
   </div>
   <div class="info">
+    <p>Total: <span id="total-ml">6.8</span> ml</p>
     <p>Remaining: <span id="remaining-ml">0</span> ml</p>
     <p>Doses Left: <span id="doses-left">0</span></p>
   </div>
@@ -87,15 +88,16 @@
   <script>
     // Constants
     const doseSize = 0.75; // Each dose is 0.75 ml
+    const totalAmount = 6.8; // Total amount of liquid in the syringe
     const maxLiquidHeight = 180; // Maximum height of the liquid in pixels
 
     // Get the 'remaining' value from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    let remaining = parseFloat({{ remaining }}) || 0;
+    let remaining = parseFloat({{ remaining }}) || totalAmount;
 
     // Function to update the syringe and info
     function updateSyringe() {
-      const liquidHeight = (remaining / doseSize) * (maxLiquidHeight / (100 / doseSize));
+      // Calculate the height of the liquid based on the proportion of remaining to total
+      const liquidHeight = (remaining / totalAmount) * maxLiquidHeight;
       const dosesLeft = Math.floor(remaining / doseSize);
 
       document.getElementById('liquid').style.height = `${liquidHeight}px`;

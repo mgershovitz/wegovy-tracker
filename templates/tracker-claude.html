@@ -86,6 +86,7 @@
         <div class="info">
             <div id="mlRemaining"></div>
             <div id="dosesRemaining"></div>
+            <div id="totalAmount"></div>
         </div>
         
         <button id="takeDoseBtn" onclick="takeDose()">Take Dose</button>
@@ -94,11 +95,12 @@
     <script>
         let remainingMl;
         const doseSize = 0.75;
+        const totalAmount = 6.8;
         const maxWidth = 180; // 240 - 60 (syringe width)
 
         function updateDisplay() {
-            // Update liquid width
-            const liquidWidth = Math.min(maxWidth * (remainingMl / 10), maxWidth);
+            // Update liquid width based on proportion of total amount
+            const liquidWidth = Math.min(maxWidth * (remainingMl / totalAmount), maxWidth);
             document.getElementById('liquid').setAttribute('width', liquidWidth);
             
             // Update text displays
@@ -107,6 +109,8 @@
             const dosesRemaining = Math.floor(remainingMl / doseSize);
             document.getElementById('dosesRemaining').textContent = 
                 `Doses left: ${dosesRemaining}`;
+            document.getElementById('totalAmount').textContent = 
+                `Total capacity: ${totalAmount} ml`;
             
             // Update button state
             document.getElementById('takeDoseBtn').disabled = remainingMl < doseSize;
@@ -124,7 +128,8 @@
                         },
                         body: JSON.stringify({
                             date: new Date().toISOString(),
-                            remainingTotal: newRemaining
+                            remainingTotal: newRemaining,
+                            totalAmount: totalAmount
                         })
                     });
                     
@@ -146,8 +151,9 @@
         }
 
         // Initialize on load
-        const urlParams = new URLSearchParams(window.location.search);
-        remainingMl = parseFloat({{ remaining }}) || 0;
+        remainingMl = parseFloat({{ remaining }}) || totalAmount; // Default to full if not specified
+        // Ensure remaining doesn't exceed total
+        remainingMl = Math.min(remainingMl, totalAmount);
         updateDisplay();
     </script>
 </body>

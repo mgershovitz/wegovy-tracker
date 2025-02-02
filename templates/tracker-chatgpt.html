@@ -96,6 +96,7 @@
   <div class="info">
     <p><span id="remaining-ml">Remaining: 0</span> ml</p>
     <p><span id="remaining-doses">Doses Left: 0</span></p>
+    <p><span id="total-amount">Total: 6.80</span> ml</p> <!-- Total amount of liquid in the syringe -->
   </div>
 
   <button id="take-dose-button">Take Dose</button>
@@ -105,16 +106,19 @@
   <script>
     // Function to extract 'remaining' from URL query parameters
     function getRemainingFromURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const remaining = parseFloat(urlParams.get('remaining'));
+      const remaining = parseFloat({{ remaining }});
       return isNaN(remaining) ? null : remaining;
     }
+
+    // Total amount in the syringe
+    const totalAmount = 6.8; // Total amount of liquid in the syringe (ml)
 
     // Function to update the syringe
     function updateSyringe(remaining) {
       const liquid = document.getElementById('liquid');
       const remainingMlText = document.getElementById('remaining-ml');
       const remainingDosesText = document.getElementById('remaining-doses');
+      const totalAmountText = document.getElementById('total-amount');
       const errorMessage = document.getElementById('error-message');
 
       if (remaining === null || remaining < 0) {
@@ -127,9 +131,9 @@
         errorMessage.style.display = 'none';
       }
 
-      // Calculate liquid level in the syringe
+      // Calculate liquid level in the syringe (proportional to the total amount)
       const syringeHeight = 300; // Syringe height in pixels
-      const liquidHeight = (remaining / 10) * syringeHeight; // Scaling to max 10 ml
+      const liquidHeight = (remaining / totalAmount) * syringeHeight; // Scale to max totalAmount
 
       liquid.style.height = `${liquidHeight}px`;
 
@@ -137,6 +141,9 @@
       remainingMlText.textContent = `Remaining: ${remaining.toFixed(2)} ml`;
       const dosesLeft = Math.floor(remaining / 0.75);
       remainingDosesText.textContent = `Doses Left: ${dosesLeft}`;
+      
+      // Update total amount in the syringe (it remains constant)
+      totalAmountText.textContent = `Total: ${totalAmount.toFixed(2)} ml`;
     }
 
     // Function to send API request
@@ -166,7 +173,7 @@
 
     // Handle Take Dose button click
     document.getElementById('take-dose-button').addEventListener('click', function() {
-      let remaining = parseFloat({{ remaining }});
+    let remaining = getRemainingFromURL();
       if (remaining >= 0.75) {
         remaining -= 0.75;
         updateSyringe(remaining);
