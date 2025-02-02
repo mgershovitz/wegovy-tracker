@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 import requests
 from typing import Optional
@@ -111,7 +112,7 @@ if __name__ == "__main__":
     notion_manager = NotionSyringeManager(
         notion_token=os.getenv("NOTION_API_KEY"),
         dosage_db_id="your_dosage_db_id",
-        status_db_id="your_status_db_id"
+        status_db_id=os.getenv("SYRINGE_STATUS_DB")
     )
     
     # Get current syringe status

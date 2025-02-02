@@ -1,11 +1,12 @@
+import os
 import requests
 import json
 from datetime import datetime
 
 # Constants
 NOTION_API_KEY = os.getenv("NOTION_API_KEY")
-DOSAGE_LOG_DATABASE_ID = "your_dosage_log_database_id"
-SYRINGE_STATUS_DATABASE_ID = "your_syringe_status_database_id"
+DOSAGE_LOG_DATABASE_ID = os.getenv("SYRINGE_STATUS_DB")
+SYRINGE_STATUS_DATABASE_ID = os.getenv("SYRINGE_STATUS_DB")
 NOTION_API_URL = "https://api.notion.com/v1"
 
 # Headers for Notion API requests

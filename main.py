@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask, redirect, render_template, request
+import db_deepseek, db_chatgpt, db_claude
 
 app = Flask(__name__)
 
@@ -8,7 +9,7 @@ app = Flask(__name__)
 @app.route("/deepseek")
 def deepseek():
 
-    remaining = 3.8
+    remaining = db_deepseek.GetSyringe()
     total=6.8
 
     # Render the HTML page current syringe status
@@ -17,7 +18,7 @@ def deepseek():
 @app.route("/chatgpt")
 def chatgpt():
 
-    remaining = 3.8
+    remaining = db_chatgpt.GetSyringe()
     total=6.8
 
     # Render the HTML page current syringe status
@@ -26,7 +27,7 @@ def chatgpt():
 @app.route("/claude")
 def claude():
 
-    remaining = 3.8
+    remaining = db_claude.get_syringe()['current_amount'];
     total=6.8
 
     # Render the HTML page current syringe status
