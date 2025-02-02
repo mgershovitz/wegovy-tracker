@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 
 # Constants
-NOTION_API_KEY = "your_notion_integration_token"
+NOTION_API_KEY = os.getenv("NOTION_API_KEY")
 DOSAGE_LOG_DATABASE_ID = "your_dosage_log_database_id"
 SYRINGE_STATUS_DATABASE_ID = "your_syringe_status_database_id"
 NOTION_API_URL = "https://api.notion.com/v1"

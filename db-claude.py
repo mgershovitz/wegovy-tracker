@@ -109,7 +109,7 @@ class NotionSyringeManager:
 if __name__ == "__main__":
     # Initialize with your Notion credentials
     notion_manager = NotionSyringeManager(
-        notion_token="your_notion_token",
+        notion_token=os.getenv("NOTION_API_KEY"),
         dosage_db_id="your_dosage_db_id",
         status_db_id="your_status_db_id"
     )

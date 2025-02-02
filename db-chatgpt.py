@@ -6,7 +6,7 @@ from datetime import datetime
 NOTION_API_URL = "https://api.notion.com/v1/pages"
 DATABASE_ID_DOSAGE_LOG = "your_dosage_log_database_id"  # Replace with your actual Dosage Log database ID
 DATABASE_ID_SYRINGE_STATUS = "your_syringe_status_database_id"  # Replace with your actual Syringe Status database ID
-NOTION_TOKEN = "your_notion_integration_token"  # Replace with your actual Notion API token
+NOTION_TOKEN = os.getenv("NOTION_API_KEY")  # Replace with your actual Notion API token
 NOTION_VERSION = "2021-05-13"  # The Notion API version
 
 # Headers for Notion API requests
