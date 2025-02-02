@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wegovy tracker</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css?family=Nunito");
+@import url("https://cdn.rawgit.com/EmojiTwo/emojitwo/master/css/emojitwo-awesome.css");
+@-webkit-keyframes wave {
+  0% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(-50deg);
+  }
+  100% {
+    transform: rotate(10deg);
+  }
+}
+@keyframes wave {
+  0% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(-50deg);
+  }
+  100% {
+    transform: rotate(10deg);
+  }
+}
+* {
+  box-sizing: border-box;
+}
+
+h1 {
+  text-align: center;
+  color: white;
+  font-family: Nunito, sans-serif;
+  font-size: 100px;
+  margin-bottom: 2em;
+}
+
+body {
+  background-color: #00bcd4;
+  min-height: 100vh;
+  padding: 10rem;
+}
+
+.penguin-container {
+  width: 230px;
+  margin: 0 auto;
+  transform: scale(1.3);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.penguin-body {
+  box-shadow: inset -20px -20px 0px rgba(0, 0, 0, 0.1);
+  background-color: #263238;
+  width: 230px;
+  height: 300px;
+  border-top-right-radius: 50%;
+  border-top-left-radius: 50%;
+  border-bottom-right-radius: 40%;
+  border-bottom-left-radius: 40%;
+}
+
+.penguin-body-left-inside,
+.penguin-body-right-inside {
+  z-index: 2;
+  position: absolute;
+  width: 130px;
+  height: 210px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.penguin-body-right-inside {
+  right: 30px;
+  transform: rotate(20deg);
+  box-shadow: inset -5px -10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.penguin-body-left-inside {
+  transform: rotate(-20deg);
+  left: 30px;
+}
+
+.penguin-right-wing,
+.penguin-left-wing {
+  position: absolute;
+  top: 130px;
+  background-color: #263238;
+  width: 100px;
+  height: 35px;
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
+}
+
+.penguin-right-wing {
+  transform-origin: left;
+  -webkit-animation-name: wave;
+          animation-name: wave;
+  -webkit-animation-duration: 1s;
+          animation-duration: 1s;
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  -webkit-animation-timing-function: ease-in-out;
+          animation-timing-function: ease-in-out;
+  box-shadow: inset -5px -10px 0px rgba(0, 0, 0, 0.1);
+  transform: rotate(40deg);
+  right: -75px;
+}
+
+.penguin-left-wing {
+  transform: rotate(130deg);
+  top: 150px;
+  left: -66px;
+}
+
+.penguin-right-eye,
+.penguin-left-eye {
+  box-shadow: inset -3px -3px 0px rgba(0, 0, 0, 0.3);
+  top: 70px;
+  z-index: 3;
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background-color: #263238;
+}
+
+.penguin-right-eye {
+  right: 57px;
+}
+
+.penguin-left-eye {
+  left: 57px;
+}
+
+.penguin-nose {
+  top: 110px;
+  position: absolute;
+  z-index: 3;
+  width: 0;
+  height: 0;
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-top: 25px solid #ffc107;
+  border-radius: 50%;
+}
+
+.penguin-right-foot,
+.penguin-left-foot {
+  box-shadow: inset -5px -10px 0px rgba(0, 0, 0, 0.1);
+  background-color: #ffc107;
+  position: absolute;
+  width: 70px;
+  height: 30px;
+  z-index: 3;
+  bottom: 0px;
+  border-radius: 50%;
+}
+
+.penguin-right-foot {
+  right: 5px;
+}
+
+.penguin-left-foot {
+  left: 5px;
+}
+
+.shadow {
+  z-index: -1;
+  bottom: -10px;
+  position: absolute;
+  width: 250px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+}
+
+.syringe-container {
+  position: relative;
+  top: 10%;
+  left: 80%;
+  transform: translate(-50%, -50%);
+}
+
+.syringe {
+  width: 80px;
+  height: 300px;
+  background-color: #ddd;
+  border: 5px solid #ddd;
+  position: relative;
+}
+
+.syringe:after,
+.syringe:before {
+  content: '';
+  position: absolute;
+  background-color: #ddd;
+}
+.syringe:after {
+  width: 140%;
+  height: 20px;
+  top: -10px;
+  left: -20%;
+}
+.syringe:before {
+  width: 10%;
+  height: 120px;
+  position: absolute;
+  bottom: -120px;
+  left: calc(45% - 2.5px);
+}
+
+.syringe .syringe-inside {
+  width: 100%;
+  height: 10%;
+  background-color: #817d7c;
+  position: absolute;
+  bottom: 10%;
+  animation: move-syringe-inside 10s infinite;
+}
+.syringe .syringe-inside:after,
+.syringe .syringe-inside:before {
+  content: '';
+  position: absolute;
+  background-color: #817d7c;
+}
+.syringe .syringe-inside:after {
+  width: 20%;
+  height: 250px;
+  top: -250px;
+  left: 40%;
+}
+.syringe .syringe-inside:before {
+  width: 120%;
+  height: 20px;
+  top: -270px;
+  left: -10%;
+}
+.syringe .wegovy {
+  width: 100%;
+  height: 10%;
+  background-color: #f02121;
+  position: absolute;
+  bottom: 0;
+}
+    </style>
+</head>
+<body>
+
+
+<div class="syringe-container">
+  <div class="syringe">
+    <div class="syringe-inside"></div>
+    <div class="wegovy"></div>
+  </div>
+</div>
+
+<div class="penguin-container">
+  <div class="penguin-body"></div>
+  <div class="penguin-body-right-inside"></div>
+  <div class="penguin-body-left-inside"></div>
+  <div class="penguin-right-wing"></div>
+  <div class="penguin-left-wing"></div>
+  <div class="penguin-right-eye"></div>
+  <div class="penguin-left-eye"></div>
+  <div class="penguin-nose"></div>
+  <div class="penguin-left-foot"></div>
+  <div class="penguin-right-foot"></div>
+  <div class="shadow"></div>
+</div>
+
+
+
+</body>
+</html>

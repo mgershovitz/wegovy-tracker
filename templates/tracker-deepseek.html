@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartoon Syringe</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      background-color: #f0f8ff;
+    }
+    .syringe {
+      position: relative;
+      width: 100px;
+      height: 200px;
+      margin: 50px auto;
+      background-color: #e0e0e0;
+      border: 5px solid #ccc;
+      border-radius: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+    .liquid {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background-color: #b19cd9; /* Soft purple color */
+      border-radius: 15px 15px 0 0;
+      transition: height 0.5s ease;
+    }
+    .plunger {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 20px;
+      background-color: #ffcc00;
+      border: 3px solid #cc9900;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+    .needle {
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 30px;
+      background-color: #ccc;
+      border-radius: 5px 5px 0 0;
+    }
+    .info {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #333;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background-color: #ffcc00;
+      border: 2px solid #cc9900;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #ffdd55;
+    }
+  </style>
+</head>
+<body>
+  <h1>Cartoon Syringe</h1>
+  <div class="syringe">
+    <div class="liquid" id="liquid"></div>
+    <div class="plunger"></div>
+    <div class="needle"></div>
+  </div>
+  <div class="info">
+    <p>Remaining: <span id="remaining-ml">0</span> ml</p>
+    <p>Doses Left: <span id="doses-left">0</span></p>
+  </div>
+  <button id="take-dose-btn">Take Dose</button>
+
+  <script>
+    // Constants
+    const doseSize = 0.75; // Each dose is 0.75 ml
+    const maxLiquidHeight = 180; // Maximum height of the liquid in pixels
+
+    // Get the 'remaining' value from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    let remaining = parseFloat(urlParams.get('remaining')) || 0;
+
+    // Function to update the syringe and info
+    function updateSyringe() {
+      const liquidHeight = (remaining / doseSize) * (maxLiquidHeight / (100 / doseSize));
+      const dosesLeft = Math.floor(remaining / doseSize);
+
+      document.getElementById('liquid').style.height = `${liquidHeight}px`;
+      document.getElementById('remaining-ml').textContent = remaining.toFixed(2);
+      document.getElementById('doses-left').textContent = dosesLeft;
+    }
+
+    // Function to send API request
+    async function sendTakeDoseRequest() {
+      const date = new Date().toISOString(); // Get current date in ISO format
+      const newRemaining = remaining - doseSize;
+
+      try {
+        const response = await fetch('/take-dose', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            date: date,
+            remaining: newRemaining,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('API request failed');
+        }
+
+        console.log('Dose taken successfully!');
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    // Event listener for the "Take Dose" button
+    document.getElementById('take-dose-btn').addEventListener('click', () => {
+      if (remaining >= doseSize) {
+        remaining -= doseSize; // Reduce remaining by 0.75 ml
+        updateSyringe(); // Update the syringe and info
+        sendTakeDoseRequest(); // Send API request
+      } else {
+        alert('Not enough liquid remaining!');
+      }
+    });
+
+    // Initialize the syringe on page load
+    updateSyringe();
+  </script>
+</body>
+</html>

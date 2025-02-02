@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartoon Syringe</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f8ff;
+      padding: 20px;
+    }
+
+    .syringe {
+      position: relative;
+      width: 150px;
+      height: 300px;
+      border: 5px solid #000;
+      border-radius: 10px 10px 0 0;
+      background-color: #fff;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .syringe:before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 20px;
+      background-color: #bbb;
+      border-radius: 50%;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .liquid {
+      position: absolute;
+      bottom: 0;
+      left: 5px;
+      width: 140px;
+      background-color: #b897f6; /* Soft purple color */
+      border-radius: 5px 5px 0 0;
+      transition: height 0.3s ease-in-out;
+    }
+
+    .pump {
+      position: absolute;
+      top: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 40px;
+      background-color: #ff6347;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .info {
+      margin-top: 30px;
+    }
+
+    .info span {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    button {
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Cartoon Syringe with Purple Liquid</h1>
+
+  <!-- Syringe container -->
+  <div class="syringe">
+    <div id="liquid" class="liquid"></div>
+  </div>
+
+  <div class="info">
+    <p><span id="remaining-ml">Remaining: 0</span> ml</p>
+    <p><span id="remaining-doses">Doses Left: 0</span></p>
+  </div>
+
+  <button id="take-dose-button">Take Dose</button>
+
+  <div id="error-message" style="color: red; display: none;">Invalid 'remaining' value!</div>
+
+  <script>
+    // Function to extract 'remaining' from URL query parameters
+    function getRemainingFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const remaining = parseFloat(urlParams.get('remaining'));
+      return isNaN(remaining) ? null : remaining;
+    }
+
+    // Function to update the syringe
+    function updateSyringe(remaining) {
+      const liquid = document.getElementById('liquid');
+      const remainingMlText = document.getElementById('remaining-ml');
+      const remainingDosesText = document.getElementById('remaining-doses');
+      const errorMessage = document.getElementById('error-message');
+
+      if (remaining === null || remaining < 0) {
+        errorMessage.style.display = 'block';
+        remainingMlText.textContent = "Remaining: 0 ml";
+        remainingDosesText.textContent = "Doses Left: 0";
+        liquid.style.height = '0';
+        return;
+      } else {
+        errorMessage.style.display = 'none';
+      }
+
+      // Calculate liquid level in the syringe
+      const syringeHeight = 300; // Syringe height in pixels
+      const liquidHeight = (remaining / 10) * syringeHeight; // Scaling to max 10 ml
+
+      liquid.style.height = `${liquidHeight}px`;
+
+      // Update remaining ml and doses
+      remainingMlText.textContent = `Remaining: ${remaining.toFixed(2)} ml`;
+      const dosesLeft = Math.floor(remaining / 0.75);
+      remainingDosesText.textContent = `Doses Left: ${dosesLeft}`;
+    }
+
+    // Function to send API request
+    function sendApiRequest(remaining) {
+      const apiUrl = '/take-dose';
+      const currentDate = new Date().toISOString();
+      const payload = {
+        date: currentDate,
+        remaining: remaining
+      };
+
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('API Response:', data);
+      })
+      .catch(error => {
+        console.error('Error sending API request:', error);
+      });
+    }
+
+    // Handle Take Dose button click
+    document.getElementById('take-dose-button').addEventListener('click', function() {
+      let remaining = parseFloat(document.getElementById('remaining-ml').textContent.replace('Remaining: ', '').replace(' ml', ''));
+      if (remaining >= 0.75) {
+        remaining -= 0.75;
+        updateSyringe(remaining);
+        sendApiRequest(remaining); // Send API request with the new remaining value
+      } else {
+        alert('Not enough liquid remaining for a full dose!');
+      }
+    });
+
+    // Get the 'remaining' value from the URL and update the syringe
+    const remaining = getRemainingFromURL();
+    updateSyringe(remaining);
+  </script>
+
+</body>
+</html>

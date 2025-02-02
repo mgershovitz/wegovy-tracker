@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Medication Doses Remaining</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+        }
+        .container {
+            text-align: center;
+        }
+        .info {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            background-color: #6a5acd;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #483d8b;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <svg width="300" height="150" viewBox="0 0 300 150">
+            <!-- Syringe body (transparent part) -->
+            <path d="M60 50 L240 50 L240 100 L60 100 Z" 
+                  fill="none" 
+                  stroke="#ccc" 
+                  stroke-width="3"/>
+            
+            <!-- Liquid -->
+            <rect id="liquid" 
+                  x="60" 
+                  y="50" 
+                  height="50" 
+                  fill="#b19cd9" 
+                  opacity="0.8"/>
+            
+            <!-- Plunger base -->
+            <rect x="240" 
+                  y="40" 
+                  width="20" 
+                  height="70" 
+                  fill="#ddd" 
+                  stroke="#999" 
+                  stroke-width="2"/>
+            
+            <!-- Plunger handle -->
+            <rect x="260" 
+                  y="60" 
+                  width="30" 
+                  height="30" 
+                  fill="#999" 
+                  rx="5"/>
+            
+            <!-- Needle -->
+            <path d="M40 75 L60 75" 
+                  stroke="#ccc" 
+                  stroke-width="3"/>
+            <path d="M20 75 L40 75" 
+                  stroke="#ccc" 
+                  stroke-width="1"/>
+        </svg>
+        
+        <div class="info">
+            <div id="mlRemaining"></div>
+            <div id="dosesRemaining"></div>
+        </div>
+        
+        <button id="takeDoseBtn" onclick="takeDose()">Take Dose</button>
+    </div>
+
+    <script>
+        let remainingMl;
+        const doseSize = 0.75;
+        const maxWidth = 180; // 240 - 60 (syringe width)
+
+        function updateDisplay() {
+            // Update liquid width
+            const liquidWidth = Math.min(maxWidth * (remainingMl / 10), maxWidth);
+            document.getElementById('liquid').setAttribute('width', liquidWidth);
+            
+            // Update text displays
+            document.getElementById('mlRemaining').textContent = 
+                `Remaining: ${remainingMl.toFixed(2)} ml`;
+            const dosesRemaining = Math.floor(remainingMl / doseSize);
+            document.getElementById('dosesRemaining').textContent = 
+                `Doses left: ${dosesRemaining}`;
+            
+            // Update button state
+            document.getElementById('takeDoseBtn').disabled = remainingMl < doseSize;
+        }
+
+        async function takeDose() {
+            if (remainingMl >= doseSize) {
+                const newRemaining = remainingMl - doseSize;
+                
+                try {
+                    const response = await fetch('/take-dose', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            date: new Date().toISOString(),
+                            remainingTotal: newRemaining
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        remainingMl = newRemaining;
+                        updateDisplay();
+                        // Update URL without refreshing page
+                        const newUrl = new URL(window.location.href);
+                        newUrl.searchParams.set('remaining', remainingMl.toString());
+                        window.history.pushState({}, '', newUrl);
+                    } else {
+                        alert('Failed to record dose. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Failed to record dose. Please try again.');
+                }
+            }
+        }
+
+        // Initialize on load
+        const urlParams = new URLSearchParams(window.location.search);
+        remainingMl = parseFloat(urlParams.get('remaining')) || 0;
+        updateDisplay();
+    </script>
+</body>
+</html>
