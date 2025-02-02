@@ -147,7 +147,7 @@
 
         // Initialize on load
         const urlParams = new URLSearchParams(window.location.search);
-        remainingMl = parseFloat(urlParams.get('remaining')) || 0;
+        remainingMl = parseFloat({{ remaining }}) || 0;
         updateDisplay();
     </script>
 </body>

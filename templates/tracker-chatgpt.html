@@ -166,7 +166,7 @@
 
     // Handle Take Dose button click
     document.getElementById('take-dose-button').addEventListener('click', function() {
-      let remaining = parseFloat(document.getElementById('remaining-ml').textContent.replace('Remaining: ', '').replace(' ml', ''));
+      let remaining = parseFloat({{ remaining }});
       if (remaining >= 0.75) {
         remaining -= 0.75;
         updateSyringe(remaining);

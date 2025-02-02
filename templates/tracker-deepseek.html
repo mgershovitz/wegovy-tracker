@@ -91,7 +91,7 @@
 
     // Get the 'remaining' value from the URL
     const urlParams = new URLSearchParams(window.location.search);
-    let remaining = parseFloat(urlParams.get('remaining')) || 0;
+    let remaining = parseFloat({{ remaining }}) || 0;
 
     // Function to update the syringe and info
     function updateSyringe() {
