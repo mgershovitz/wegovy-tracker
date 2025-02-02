@@ -2,12 +2,11 @@ import os
 
 from flask import Flask, redirect, render_template, request
 
-
 app = Flask(__name__)
 
 
 @app.route("/deepseek")
-def index():
+def deepseek():
 
     remaining = 3.8
     total=6.8
@@ -16,7 +15,7 @@ def index():
     return render_template("tracker-deepseek.html", remaining=remaining, total=total)
 
 @app.route("/chatgpt")
-def index():
+def chatgpt():
 
     remaining = 3.8
     total=6.8
@@ -25,7 +24,7 @@ def index():
     return render_template("tracker-chatgpt.html", remaining=remaining, total=total)
 
 @app.route("/claude")
-def index():
+def claude():
 
     remaining = 3.8
     total=6.8
