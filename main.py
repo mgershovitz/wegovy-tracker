@@ -6,14 +6,33 @@ from flask import Flask, redirect, render_template, request
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/deepseek")
 def index():
 
     remaining = 3.8
     total=6.8
 
     # Render the HTML page current syringe status
-    return render_template("tracker.html", remaining=remaining, total=total)
+    return render_template("tracker-deepseek.html", remaining=remaining, total=total)
+
+@app.route("/chatgpt")
+def index():
+
+    remaining = 3.8
+    total=6.8
+
+    # Render the HTML page current syringe status
+    return render_template("tracker-chatgpt.html", remaining=remaining, total=total)
+
+@app.route("/claude")
+def index():
+
+    remaining = 3.8
+    total=6.8
+
+    # Render the HTML page current syringe status
+    return render_template("tracker-claude.html", remaining=remaining, total=total)
+
 
 
 if __name__ == "__main__":
