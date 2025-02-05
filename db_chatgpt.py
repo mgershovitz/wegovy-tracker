@@ -67,7 +67,7 @@ def GetSyringe():
     query = {
         "filter": {
             "property": "Status",
-            "select": {
+            "status": {
                 "equals": "IN_USE"
             }
         }

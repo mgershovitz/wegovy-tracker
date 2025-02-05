@@ -30,7 +30,7 @@ class NotionSyringeManager:
         filter_data = {
             "filter": {
                 "property": "status",
-                "select": {
+                "status": {
                     "equals": "IN_USE"
                 }
             }
