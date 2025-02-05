@@ -1,7 +1,8 @@
 import os
 
 from flask import Flask, redirect, render_template, request
-import db_deepseek, db_chatgpt, db_claude
+import db_deepseek, db_chatgpt
+from db_claude import NotionSyringeManager
 
 app = Flask(__name__)
 
@@ -26,12 +27,12 @@ def chatgpt():
 
 @app.route("/claude")
 def claude():
+	syringeMng = NotionSyringeManager();
+	remaining = syringeMng.get_syringe()['current_amount'];
+	total=6.8
 
-    remaining = db_claude.get_syringe()['current_amount'];
-    total=6.8
-
-    # Render the HTML page current syringe status
-    return render_template("tracker-claude.html", remaining=remaining, total=total)
+	# Render the HTML page current syringe status
+	return render_template("tracker-claude.html", remaining=remaining, total=total)
 
 
 
