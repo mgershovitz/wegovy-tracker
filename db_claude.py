@@ -4,19 +4,15 @@ import requests
 from typing import Optional
 
 class NotionSyringeManager:
-    def __init__(self, notion_token: str, dosage_db_id: str, status_db_id: str):
+    def __init__(self):
         """Initialize the Notion Syringe Manager.
         
-        Args:
-            notion_token: Notion API integration token
-            dosage_db_id: ID of the dosage log database
-            status_db_id: ID of the syringe status database
         """
-        self.notion_token = notion_token
-        self.dosage_db_id = dosage_db_id
-        self.status_db_id = status_db_id
+        self.notion_token = os.getenv("NOTION_API_KEY")
+        self.dosage_db_id = "your_dosage_db_id"
+        self.status_db_id = os.getenv("SYRINGE_STATUS_DB")
         self.headers = {
-            "Authorization": f"Bearer {notion_token}",
+            "Authorization": f"Bearer {self.notion_token}",
             "Content-Type": "application/json",
             "Notion-Version": "2022-06-28"
         }
@@ -109,11 +105,7 @@ class NotionSyringeManager:
 # Example usage:
 if __name__ == "__main__":
     # Initialize with your Notion credentials
-    notion_manager = NotionSyringeManager(
-        notion_token=os.getenv("NOTION_API_KEY"),
-        dosage_db_id="your_dosage_db_id",
-        status_db_id=os.getenv("SYRINGE_STATUS_DB")
-    )
+    notion_manager = NotionSyringeManager()
     
     # Get current syringe status
     syringe = notion_manager.get_syringe()
