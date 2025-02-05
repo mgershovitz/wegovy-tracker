@@ -82,6 +82,8 @@ def GetSyringe():
     # Get the first syringe (assuming only one syringe is IN_USE)
     syringe = results[0]
     current_amount = syringe["properties"]["Current Amount"]["number"]
+    print("found syringe")
+    print(current_amount)
 
     return current_amount
 
