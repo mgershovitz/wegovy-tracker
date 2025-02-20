@@ -8,7 +8,7 @@ NOTION_API_URL = "https://api.notion.com/v1/pages"
 DATABASE_ID_DOSAGE_LOG = "your_dosage_log_database_id"  # Replace with your actual Dosage Log database ID
 DATABASE_ID_SYRINGE_STATUS = os.getenv("SYRINGE_STATUS_DB")  # Replace with your actual Syringe Status database ID
 NOTION_TOKEN = os.getenv("NOTION_API_KEY")  # Replace with your actual Notion API token
-NOTION_VERSION = "2021-05-13"  # The Notion API version
+NOTION_VERSION = "2022-06-28"  # The Notion API version
 
 # Headers for Notion API requests
 headers = {
@@ -65,11 +65,9 @@ def GetSyringe():
     # Query the Syringe Status table for the syringe with status 'IN_USE'
     url = f"https://api.notion.com/v1/databases/{DATABASE_ID_SYRINGE_STATUS}/query"
     query = {
-        "filter": {
+         "filter": {
             "property": "Status",
-            "status": {
-                "equals": "IN_USE"
-            }
+            "status": {"equals": "IN_USE"},
         }
     }
 
@@ -82,7 +80,7 @@ def GetSyringe():
         if data["results"]:
             syringe = data["results"][0]  # Get the first syringe found (should be the only one with 'IN_USE')
             syringe_id = syringe["id"]
-            current_amount = syringe["properties"]["Current Amount"]["number"]
+            current_amount = syringe["properties"]["CurrentAmount"]["number"]
             print(f"Current Syringe Amount for Syringe ID {syringe_id}: {current_amount} ml")
             return current_amount
         else:
@@ -91,3 +89,6 @@ def GetSyringe():
     else:
         print(f"Failed to retrieve syringe: {response.status_code} - {response.text}")
         return None
+
+if __name__ == "__main__":
+    GetSyringe()

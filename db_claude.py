@@ -29,7 +29,7 @@ class NotionSyringeManager:
         query_url = f"{self.base_url}/databases/{self.status_db_id}/query"
         filter_data = {
             "filter": {
-                "property": "status",
+                "property": "Status",
                 "status": {
                     "equals": "IN_USE"
                 }
@@ -46,9 +46,7 @@ class NotionSyringeManager:
         syringe = results[0]
         return {
             "syringe_id": syringe["id"],
-            "current_amount": syringe["properties"]["current_amount"]["number"],
-            "initial_amount": syringe["properties"]["initial_amount"]["number"],
-            "opening_date": syringe["properties"]["opening_date"]["date"]["start"]
+            "current_amount": syringe["properties"]["CurrentAmount"]["number"],
         }
 
     def take_dose(self, amount: float = 0.75) -> bool:
