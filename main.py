@@ -1,27 +1,31 @@
-from flask import Flask, request, render_template, redirect, url_for
-from flask_jwt_extended import JWTManager, create_access_token, verify_jwt_in_request
+from flask import Flask, request, render_template, redirect, url_for, make_response
 from functools import wraps
 import os
-from datetime import timedelta
-import db_deepseek, db_chatgpt
-from db_claude import NotionSyringeManager
+from datetime import datetime, timedelta
+import jwt
+
+import db_deepseek  
 
 app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=30)
-jwt = JWTManager(app)
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # Custom decorator for protected routes
-def token_required(f):
+def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         # Skip token check for login route
         if request.path == '/login':
             return f(*args, **kwargs)
+        
+        token = request.cookies.get('auth_token')
+        if not token:
+            print("No token cookie found")
+            return redirect(url_for('login'))
             
         try:
-            # Try to verify JWT token
-            verify_jwt_in_request()
+            # Verify token
+            payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+            # If we get here, token is valid
             return f(*args, **kwargs)
         except Exception as e:
             print(f"Token verification failed: {str(e)}")
@@ -34,24 +38,29 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         
-        # Validate credentials (use a secure method in production)
         if username == os.environ.get('AUTH_USERNAME') and \
            password == os.environ.get('AUTH_PASSWORD'):
-            # Create access token
-            access_token = create_access_token(identity=username)
             
-            # Return a page that sets the token in localStorage and redirects
-            return render_template('auth_success.html', token=access_token)
+            # Create token
+            payload = {
+                'user': username,
+                'exp': datetime.utcnow() + timedelta(days=30)
+            }
+            token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+            
+            # Create response with cookie
+            response = make_response(redirect(url_for('index')))
+            response.set_cookie('auth_token', token, httponly=True, max_age=30*24*60*60)  # 30 days
+            
+            return response
         else:
             return render_template('login.html', error="Invalid credentials")
     
-    # GET request - show login form
     return render_template('login.html')
 
-app.route('/')
-@token_required
-def deepseek():
-    print("Successfully authenticated, rendering index page")
+@app.route('/')
+@login_required
+def index():
 
     remaining = db_deepseek.GetSyringe()
     total=6.8

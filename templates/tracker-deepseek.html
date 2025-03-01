@@ -2,30 +2,6 @@
 <html lang="en">
 
 <head>
-  <script>
-    // Auth flow
-    document.addEventListener('DOMContentLoaded', function() {
-            // Add token to fetch requests
-            const token = localStorage.getItem('authToken');
-            if (token) {
-                // Override fetch to include the token
-                const originalFetch = window.fetch;
-                window.fetch = function() {
-                    const args = Array.from(arguments);
-                    const options = args[1] || {};
-                    
-                    if (!options.headers) {
-                        options.headers = {};
-                    }
-                    
-                    options.headers['Authorization'] = 'Bearer ' + token;
-                    args[1] = options;
-                    
-                    return originalFetch.apply(this, args);
-                };
-            }
-        });
-  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cartoon Syringe</title>

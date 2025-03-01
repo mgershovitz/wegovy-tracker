@@ -16,7 +16,7 @@
     {% if error %}
     <div class="error">{{ error }}</div>
     {% endif %}
-    <form method="post">
+    <form method="post" action="/login">
         <div class="form-group">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
@@ -27,16 +27,5 @@
         </div>
         <button type="submit">Login</button>
     </form>
-
-    <script>
-        // Check if we already have a token
-        document.addEventListener('DOMContentLoaded', function() {
-            const token = localStorage.getItem('authToken');
-            if (token) {
-                // Try to use the existing token
-                window.location.href = '/';
-            }
-        });
-    </script>
 </body>
 </html>
