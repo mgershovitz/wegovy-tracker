@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <script>
+    // Auth flow
+    document.addEventListener('DOMContentLoaded', function() {
+            // Add token to fetch requests
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                // Override fetch to include the token
+                const originalFetch = window.fetch;
+                window.fetch = function() {
+                    const args = Array.from(arguments);
+                    const options = args[1] || {};
+                    
+                    if (!options.headers) {
+                        options.headers = {};
+                    }
+                    
+                    options.headers['Authorization'] = 'Bearer ' + token;
+                    args[1] = options;
+                    
+                    return originalFetch.apply(this, args);
+                };
+            }
+        });
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cartoon Syringe</title>
@@ -10,6 +35,7 @@
       text-align: center;
       background-color: #f0f8ff;
     }
+
     .syringe {
       position: relative;
       width: 100px;
@@ -20,14 +46,17 @@
       border-radius: 20px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     }
+
     .liquid {
       position: absolute;
       bottom: 0;
       width: 100%;
-      background-color: #b19cd9; /* Soft purple color */
+      background-color: #b19cd9;
+      /* Soft purple color */
       border-radius: 15px 15px 0 0;
       transition: height 0.5s ease;
     }
+
     .plunger {
       position: absolute;
       top: -20px;
@@ -40,6 +69,7 @@
       border-radius: 10px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     }
+
     .needle {
       position: absolute;
       bottom: -30px;
@@ -50,11 +80,13 @@
       background-color: #ccc;
       border-radius: 5px 5px 0 0;
     }
+
     .info {
       margin-top: 20px;
       font-size: 20px;
       color: #333;
     }
+
     button {
       margin-top: 20px;
       padding: 10px 20px;
@@ -66,11 +98,13 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
+
     button:hover {
       background-color: #ffdd55;
     }
   </style>
 </head>
+
 <body>
   <div class="syringe">
     <div class="liquid" id="liquid"></div>
@@ -146,4 +180,5 @@
     updateSyringe();
   </script>
 </body>
+
 </html>
